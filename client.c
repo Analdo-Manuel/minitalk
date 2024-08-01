@@ -5,7 +5,7 @@
 
 void     ft_pri_message(pid_t PID, unsigned char str)
 {
-	int i;
+	unsigned int i;
 
 	i = 8;
 	while (i--)

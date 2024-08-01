@@ -6,7 +6,7 @@
 /*   By: almanuel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 04:54:01 by almanuel          #+#    #+#             */
-/*   Updated: 2024/07/30 17:29:18 by almanuel         ###   ########.fr       */
+/*   Updated: 2024/08/01 13:15:23 by almanuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ void	ft_putnbr(pid_t nbr)
 
 void	ft_sent_message(int sig)
 {
-	static int	bit = 0;
-	static unsigned char r = 0;
+	static int		bit;
+	static unsigned char	r;
 
 	r |= (sig == SIGUSR1);
 	bit++;
