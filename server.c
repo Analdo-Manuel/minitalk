@@ -6,7 +6,7 @@
 /*   By: almanuel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 04:54:01 by almanuel          #+#    #+#             */
-/*   Updated: 2024/08/01 13:15:23 by almanuel         ###   ########.fr       */
+/*   Updated: 2024/08/02 11:35:01 by analdo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,18 @@ void	ft_putnbr(pid_t nbr)
 
 void	ft_sent_message(int sig)
 {
-	static int		bit;
 	static unsigned char	r;
+	static unsigned int		i;
 
 	r |= (sig == SIGUSR1);
-	bit++;
-	if (bit == 8)
+	i++;
+	if (i == 8)
 	{
 		if (r == '\0')
 			ft_putchar('\n');
 		else
 			ft_putchar(r);
-		bit = 0;
+		i = 0;
 		r = 0;
 	}
 	else
@@ -47,8 +47,10 @@ void	ft_sent_message(int sig)
 
 int	main(void)
 {
-        ft_putnbr(getpid());
-        ft_putchar('\n');
+	write(1, "\033[36m\033[1mBEM_VINDO_AO_SERVIDOR\033[0m\n", 36);
+	write(1, "\033[32m\033[1mPID_SERVER -> \033[0m", 28);
+	ft_putnbr(getpid());
+	ft_putchar('\n');
 	while (1)
 	{
 		signal(SIGUSR1, ft_sent_message);

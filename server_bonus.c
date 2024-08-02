@@ -1,18 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: almanuel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 04:54:01 by almanuel          #+#    #+#             */
-/*   Updated: 2024/08/01 16:27:30 by almanuel         ###   ########.fr       */
+/*   Updated: 2024/08/02 11:55:02 by analdo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <unistd.h>
-#include <stdio.h>
 
 void	ft_putchar(char c)
 {
@@ -26,23 +25,26 @@ void	ft_putnbr(pid_t nbr)
 	ft_putchar(nbr % 10 + '0');
 }
 
-void	ft_sent_message(int sig, siginfo_t *info, void *context)
+void	print_message(int sig, siginfo_t *info, void *c)
 {
 	static unsigned char	r;
-	static unsigned int		bit;
+	static unsigned int		i;
+	pid_t					pid_cl;
 
+	(void)c;
 	r |= (sig == SIGUSR1);
-	bit++;
-	if (bit == 8)
+	i++;
+	if (i == 8)
 	{
 		if (r == '\0')
 		{
 			ft_putchar('\n');
-			kill(info->si_pid, SIGUSR1);
+			pid_cl = info->si_pid;
+			kill(pid_cl, SIGUSR1);
 		}
 		else
 			ft_putchar(r);
-		bit = 0;
+		i = 0;
 		r = 0;
 	}
 	else
@@ -53,8 +55,10 @@ int	main(void)
 {
 	struct sigaction	sa;
 
-	sa.sa_sigaction = ft_sent_message;
+	sa.sa_sigaction = print_message;
 	sa.sa_flags = SA_SIGINFO;
+	write(1, "\033[35m\033[1mBEM_VINDO_AO_SERVIDOR(BONUS)\033[0m\n", 43);
+	write(1, "\033[32m\033[1mPID_SERVIDOR -> \033[0m", 30);
 	ft_putnbr(getpid());
 	ft_putchar('\n');
 	while (1)

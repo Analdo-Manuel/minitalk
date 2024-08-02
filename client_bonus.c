@@ -1,68 +1,70 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: almanuel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/01 15:39:32 by almanuel          #+#    #+#             */
-/*   Updated: 2024/08/01 17:21:03 by almanuel         ###   ########.fr       */
+/*   Created: 2024/08/02 11:11:04 by almanuel          #+#    #+#             */
+/*   Updated: 2024/08/02 11:50:24 by analdo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdio.h>
 
-void     ft_pri_message(pid_t PID, unsigned char str)
+void	set_message(pid_t pid, unsigned char str)
 {
-	unsigned int i;
+	int	i;
 
 	i = 8;
 	while (i--)
 	{
 		if ((str >> i) & 1)
-			kill(PID, SIGUSR1);
+			kill(pid, SIGUSR1);
 		else
-			kill(PID, SIGUSR2);
-		usleep(80);
+			kill(pid, SIGUSR2);
+		usleep(50);
 	}
 }
 
 pid_t	ft_atoi(char *str)
 {
-	pid_t	r = 0;
+	pid_t	r;
 
+	r = 0;
 	while (*str >= '0' && *str <= '9')
 		r = r * 10 + (*str++ - '0');
 	return (r);
 }
 
-void	ft_confirmation(int sig)
+void	messager_conf(int sig, siginfo_t *info, void *c)
 {
-        if (sig == SIGUSR1)
-        {
-	  write(1, "SUCCESS\n", 8);
-	  exit(0);
-	}
+	(void)info;
+	(void)c;
+	if (sig == SIGUSR1)
+		write(1, "\033[32m\033[1mSUCCESS\033[0m\n", 22);
+	exit(0);
 }
 
 int	main(int ac, char **av)
 {
-	pid_t	pid;
+	struct sigaction	sa;
 
-	if ( ac == 3)
+	if (ac == 3)
 	{
-		pid = getpid();
-		printf("%d\n", pid);
-		while (av[2][0])
-			ft_pri_message(ft_atoi(av[1]), (av[2]++)[0]);
-		signal(SIGUSR1, ft_confirmation);
-		ft_pri_message(ft_atoi(av[1]), (av[2])[0]);
-		usleep(100000);
-		write(2, "\033[1m\033[31mERROR\033[0m\n", 20);
-		exit(1);
+		sa.sa_sigaction = messager_conf;
+		if (ac == 3)
+		{
+			while (av[2][0])
+				set_message(ft_atoi(av[1]), (av[2]++)[0]);
+			sigaction(SIGUSR1, &sa, NULL);
+			set_message(ft_atoi(av[1]), (av[2])[0]);
+			usleep(1000);
+			write(2, "\033[31m\033[1mERROR\033[0m\n", 20);
+			exit(1);
+		}
 	}
 	return (0);
 }
