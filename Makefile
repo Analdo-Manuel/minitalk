@@ -6,14 +6,14 @@
 #    By: analdo <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/02 18:10:25 by analdo            #+#    #+#              #
-#    Updated: 2024/08/03 19:05:50 by analdo           ###   ########.fr        #
+#    Updated: 2024/08/04 21:19:34 by almanuel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME1 = server
 NAME2 = client
-NAME1_B = server_bonus
-NAME2_B = client
+NAME_B1 = server_bonus
+NAME_B2 = client_bonus
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRC_1 = server.c
@@ -28,18 +28,21 @@ B_OBJ2 = ${B_SRC_2:.c=.o}
 all: $(NAME1) $(NAME2)
 
 $(NAME1): $(OBJ1)
-	$(CC) $(CFLAGS) $(OBJ1) -o $(NAME1)
+	$(CC) $(CFLAGS) -o $(NAME1) $(OBJ1)
 
 $(NAME2): $(OBJ2)
-	$(CC) $(CFLAGS) $(OBJ2) -o $(NAME2)
+	$(CC) $(CFLAGS) -o $(NAME2) $(OBJ2)
 
-bonus: $(NAME1_B) $(NAME2_B)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME1_B): $(B_OBJ1)
-	$(CC) $(CFLAGS) $(B_OBJ1) -o $(NAME1_B)
+bonus: $(NAME_B1) $(NAME_B2)
 
-$(NAME2_B): $(B_OBJ2)
-	$(CC) $(CFLAGS) $(B_OBJ2) -o $(NAME2_B)
+$(NAME_B1): $(B_OBJ1)
+	$(CC) $(CFLAGS) -o $(NAME_B1) $(B_OBJ1)
+
+$(NAME_B2): $(B_OBJ2)
+	$(CC) $(CFLAGS) -o $(NAME_B2) $(B_OBJ2)
 
 clean:
 	rm -rf $(OBJ1)
@@ -50,7 +53,7 @@ clean:
 fclean: clean
 	rm -rf $(NAME1)
 	rm -rf $(NAME2)
-	rm -rf $(NAME1_B)
-	rm -rf $(NAME2_B)
+	rm -rf $(NAME_B1)
+	rm -rf $(NAME_B2)
 
 re: fclean all
